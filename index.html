@@ -90,7 +90,9 @@ a{color:var(--ct);text-decoration:none;transition:color .3s}a:hover{color:var(--
 .fs a:hover{background:rgba(0,212,170,.15);border-color:var(--ct);transform:translateY(-2px);color:var(--ct)}
 .fbt{max-width:1200px;margin:0 auto;padding-top:2rem;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center}
 .fbt p{font-size:.8rem;color:rgba(255,255,255,.35)}
-.rv{opacity:0;transform:translateY(60px);transition:opacity .8s,transform .8s}.rv.rd{opacity:1;transform:translateY(0)}
+.rv{opacity:1;transform:translateY(0);transition:opacity .8s,transform .8s}
+.js-on .rv{opacity:0;transform:translateY(60px)}
+.js-on .rv.rd{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}
 
 @media(max-width:1024px){.cg,.clg{grid-template-columns:repeat(2,1fr)}}
@@ -102,7 +104,7 @@ a{color:var(--ct);text-decoration:none;transition:color .3s}a:hover{color:var(--
 <body>
 <canvas id="pc"></canvas>
 <nav class="nav" id="nav">
-  <a href="#" class="nl">MOTIV<span>8</span></a>
+  <a href="#" class="nl">Motiv8<span>Products</span></a>
   <ul class="nc" id="nc">
     <li><a href="#collection">Collection</a></li>
     <li><a href="#categories">Realms</a></li>
@@ -266,7 +268,7 @@ a{color:var(--ct);text-decoration:none;transition:color .3s}a:hover{color:var(--
 <footer class="ft">
   <div class="fc">
     <div class="fb">
-      <h3>MOTIV<span>8</span></h3>
+      <h3>Motiv8<span>Products</span></h3>
       <p>Where cosmic art meets wearable spirituality. Sacred designs for the modern seeker.</p>
     </div>
     <div class="fc2">
@@ -313,15 +315,19 @@ function lp(){x.clearRect(0,0,c.width,c.height);p.forEach(t=>{t.update();t.draw(
 window.addEventListener('mousemove',e=>{m.x=e.clientX;m.y=e.clientY});window.addEventListener('mouseleave',()=>{m.x=null;m.y=null});
 rs();for(let i=0;i<N;i++)p.push(new P());lp();window.addEventListener('resize',()=>{rs();p=[];for(let i=0;i<N;i++)p.push(new P())});
 
-// Scroll Reveal
-const ro=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('rd')}),{threshold:.1});
-document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+// Enable JS animations (content starts visible, only hide once JS is ready)
+document.body.classList.add('js-on');
+
+// Scroll Reveal — robust: catches all elements including those already visible
+const ro=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('rd')}),{threshold:.05,rootMargin:'0px 0px 50px 0px'});
+document.querySelectorAll('.rv').forEach(el=>{ro.observe(el);
+  // Immediate reveal for elements already in viewport on load
+  const rect=el.getBoundingClientRect();
+  if(rect.top<window.innerHeight&&rect.bottom>0)el.classList.add('rd');
+});
 
 // Navbar Scroll
 window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('sc',window.scrollY>100)});
-
-// Hero Entrance
-document.querySelectorAll('.hero .rv').forEach((el,i)=>{setTimeout(()=>el.classList.add('rd'),i*200+300)});
 </script>
 </body>
 </html>
