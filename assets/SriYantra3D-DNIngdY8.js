@@ -1,0 +1,1 @@
+/* Sri Yantra 3D - loaded dynamically */
